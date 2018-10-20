@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test</title>
+    <link href="dist/css/style.css" rel="stylesheet">
+  </head>
+
+  <body class="page-wrapper">
+    <main class="page-content">
+      <div id="app" v-cloak>
+        <div class="users">
+          <table class="users__table" v-show="tableVisibility">
+            <caption class="users__caption">Всего пользователей: {{ getUsersCount }}</caption>
+
+            <thead>
+              <tr class="users__header-row">
+                <th></th>
+                <th>Фамилия</th>
+                <th>Имя</th>
+                <th>Отчество</th>
+                <th></th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr v-for="(user, i) in users" v-bind:key="user.id" class="users__body-row">
+                <td class="users__avatar">
+                  <img v-bind:src="user.avatar ? user.avatar : 'dist/img/users_avatars/default.png'" v-bind:alt="getFullName(i)">
+                </td>
+
+                <td>{{ user.lastName | upperCase }}</td>
+                <td>{{ user.firstName | upperCase }}</td>
+                <td>{{ user.secondName | upperCase }}</td>
+
+                <td>
+                  <button class="button" v-copy="getFullName(i)">Скопировать ФИО</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <button class="button  users__toggle-button" type="button" v-on:click="toggleTableVisibility" v-tooltip="toggleTextOfButton + ' таблицу'">{{ toggleTextOfButton }} таблицу</button>
+        </div>
+      </div>
+    </main>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/v-copy@0.1.0/dist/v-copy.js"></script>
+    <script src="https://unpkg.com/v-tooltip"></script>
+    <script src="dist/js/bundle.js"></script>
+  </body>
+</html>
