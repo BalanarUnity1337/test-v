@@ -11,7 +11,7 @@
     <main class="page-content">
       <div id="app" v-cloak>
         <div class="users">
-          <table class="users__table" v-show="tableVisibility">
+          <table class="users__table" v-if="tableVisibility">
             <caption class="users__caption">Всего пользователей: {{ getUsersCount }}</caption>
 
             <thead>
@@ -25,9 +25,9 @@
             </thead>
 
             <tbody>
-              <tr v-for="(user, i) in users" v-bind:key="user.id" class="users__body-row">
+              <tr v-for="user in users" v-bind:key="user.id" class="users__body-row">
                 <td class="users__avatar">
-                  <img v-bind:src="user.avatar ? user.avatar : 'dist/img/users_avatars/default.png'" v-bind:alt="getFullName(i)">
+                  <img v-bind:src="user.avatar || 'dist/img/users_avatars/default.png'" v-bind:alt="getFullName(user)">
                 </td>
 
                 <td>{{ user.lastName | upperCase }}</td>
@@ -35,7 +35,7 @@
                 <td>{{ user.secondName | upperCase }}</td>
 
                 <td>
-                  <button class="button" v-copy="getFullName(i)">Скопировать ФИО</button>
+                  <button class="button" type="button" v-copy="getFullName(user)">Скопировать ФИО</button>
                 </td>
               </tr>
             </tbody>

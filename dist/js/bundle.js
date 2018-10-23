@@ -138,8 +138,8 @@ window.app = new Vue({
     toggleTableVisibility: function toggleTableVisibility() {
       this.tableVisibility = !this.tableVisibility;
     },
-    getFullName: function getFullName(i) {
-      return this.users[i].lastName + ' ' + this.users[i].firstName + ' ' + this.users[i].secondName;
+    getFullName: function getFullName(user) {
+      return user.lastName + ' ' + user.firstName + ' ' + user.secondName;
     }
   },
   computed: {
@@ -147,11 +147,7 @@ window.app = new Vue({
       return this.users.length;
     },
     toggleTextOfButton: function toggleTextOfButton() {
-      if (this.tableVisibility) {
-        return 'Скрыть';
-      } else {
-        return 'Показать';
-      }
+      return this.tableVisibility ? 'Скрыть' : 'Показать';
     }
   },
   filters: {
