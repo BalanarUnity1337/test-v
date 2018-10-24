@@ -512,6 +512,10 @@ template {
 .page-wrapper {
   font-family: "Roboto", "Arial", sans-serif; }
 
+.users__empty {
+  padding: 10px 0;
+  text-align: center; }
+
 .users__table {
   margin: 0 auto;
   border-collapse: collapse;
@@ -553,6 +557,43 @@ template {
   display: block;
   margin: 0 auto;
   margin-top: 20px; }
+
+.user-edit__empty {
+  text-align: center; }
+
+.user-edit__data {
+  margin: 0 auto;
+  border-collapse: collapse;
+  border-right: 1px solid #444444;
+  border-left: 1px solid #444444; }
+
+.user-edit__data-row {
+  border-bottom: 1px solid #444444;
+  background-color: #fafafa;
+  transition: background-color 0.3s ease; }
+  .user-edit__data-row:nth-child(odd) {
+    background-color: #f0f0f0; }
+  .user-edit__data-row td {
+    padding: 0.5em 1em;
+    border-right: 1px solid #444444; }
+    .user-edit__data-row td:last-child {
+      border-right: none; }
+
+.user-edit__data-value input, .user-edit__data-value textarea {
+  box-sizing: border-box;
+  width: 300px;
+  padding: 0 5px;
+  font-size: 16px;
+  border: 1px solid #949cff;
+  border-radius: 3px; }
+
+.user-edit__data-value input {
+  height: 26px; }
+
+.user-edit__data-value textarea {
+  min-height: 100px;
+  padding: 5px;
+  resize: vertical; }
 
 
 /*# sourceMappingURL=style.css.map*/

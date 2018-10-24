@@ -6,38 +6,38 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
   entry: [
-    './src/js/index.js',
+    // './src/js/index.js',
     './src/sass/style.scss'
   ],
 
   output: {
-    filename: './js/bundle.js'
+    // filename: './js/bundle.js'
   },
 
   devtool: 'source-map',
 
   module: {
     rules: [
-      {
-        test: /\.js$/,
-        include: path.resolve(__dirname, 'src/js'),
-        use: {
-          loader: 'babel-loader',
-          options: {
-            presets: [
-              ['env', {
-                'targets': {
-                  'browsers': [
-                    '>0.2%',
-                    'not dead',
-                    'last 2 versions'
-                  ]
-                }
-              }]
-            ]
-          }
-        }
-      },
+      // {
+      //   test: /\.js$/,
+      //   include: path.resolve(__dirname, 'src/js'),
+      //   use: {
+      //     loader: 'babel-loader',
+      //     options: {
+      //       presets: [
+      //         ['env', {
+      //           'targets': {
+      //             'browsers': [
+      //               '>0.2%',
+      //               'not dead',
+      //               'last 2 versions'
+      //             ]
+      //           }
+      //         }]
+      //       ]
+      //     }
+      //   }
+      // },
 
       {
         test: /\.(sc|c)ss$/,
