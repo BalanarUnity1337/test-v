@@ -1,15 +1,23 @@
 <template>
   <div class="container">
-    <div class="display-4 text-white text-center" v-if="!users.length">Список пользователей пока пуст</div>
+    <div
+      v-if="!usersCount"
+      class="display-4 text-white text-center">Список пользователей пока пуст</div>
 
     <div v-else>
       <div class="row justify-content-between mb-3">
         <h3 class="text-white text-center">Список пользователей: {{ usersCount }}</h3>
 
-        <button class="btn btn-secondary" type="button" v-on:click="toggleTableVisibility">{{ toggleButtonStateText }}</button>
+        <button
+          class="btn btn-secondary"
+          type="button"
+          v-on:click="toggleTableVisibility">{{ toggleButtonStateText }}</button>
       </div>
 
-      <user-list v-bind:users="users" v-if="tableVisibility" v-on:remove-user="removeUser" />
+      <user-list
+        v-if="tableVisibility"
+        v-bind:users="users"
+        v-on:remove-user="removeUser" />
     </div>
   </div>
 </template>
@@ -28,12 +36,9 @@ export default {
   data: function() {
     return {
       users: [],
-      tableVisibility: true
+      tableVisibility: true,
+      usersURI: 'http://localhost:3004/users/'
     };
-  },
-
-  mounted: function() {
-    this.getUsers();
   },
 
   computed: {
@@ -46,10 +51,14 @@ export default {
     }
   },
 
+  mounted: function() {
+    this.getUsers();
+  },
+
   methods: {
     getUsers: function() {
       axios
-        .get('http://localhost:3004/users')
+        .get(this.usersURI)
         .then(response => (this.users = response.data))
         .catch(error => console.error(error));
     },
@@ -60,7 +69,7 @@ export default {
 
     removeUser: function(id) {
       axios
-        .delete('http://localhost:3004/users/' + id)
+        .delete(this.usersURI + id)
         .then(() => this.getUsers())
         .catch(error => console.error(error));
     }

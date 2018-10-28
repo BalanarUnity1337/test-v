@@ -1,20 +1,27 @@
 <template>
   <div class="container">
-    <div class="display-4 text-white text-center" v-if="!user">Такого пользователя нет</div>
+    <div
+      v-if="!user"
+      class="display-4 text-white text-center">Такого пользователя нет</div>
 
     <div v-else>
       <h3 class="text-white text-center mb-3">Редактирование пользователя</h3>
 
-      <user-form v-bind:user="user" />
-
-      <button type="button" class="btn btn-light mb-3" v-on:click="editUser">Подтвердить</button>
+      <user-form
+        v-bind:user="user"
+        v-on:edit-user="editUser"
+        v-on:property-change="propertyChange" />
     </div>
   </div>
 </template>
 
 <script>
-import UserForm from '@/components/UserForm.vue';
+import Vue from 'vue';
 import axios from 'axios';
+import AsyncComputed from 'vue-async-computed';
+import UserForm from '@/components/UserForm.vue';
+
+Vue.use(AsyncComputed);
 
 export default {
   name: 'EditUserPage',
@@ -25,33 +32,39 @@ export default {
 
   data: function() {
     return {
-      user: null,
-      id: this.$route.params.id
+      usersURI: 'http://localhost:3004/users/'
     };
   },
 
-  watch: {
-    id: {
-      handler: 'getUserById',
-      immediate: true
+  computed: {
+    id: function() {
+      return this.$route.params.id;
+    },
+
+    usersIdURI: function() {
+      return this.usersURI + this.id;
+    }
+  },
+
+  asyncComputed: {
+    user: function() {
+      return axios
+        .get(this.usersIdURI)
+        .then(response => response.data)
+        .catch(error => console.error(error));
     }
   },
 
   methods: {
-    getUserById: function() {
+    editUser: function() {
       axios
-        .get('http://localhost:3004/users/' + this.id)
-        .then(response => (this.user = response.data))
+        .patch(this.usersIdURI, this.user)
+        .then(() => this.$router.push({ path: '/users' }))
         .catch(error => console.error(error));
     },
 
-    editUser: function() {
-      axios
-        .patch('http://localhost:3004/users/' + this.id, this.user, {
-          headers: { 'Content-Type': 'application/json' }
-        })
-        .then(() => this.$router.push({ path: '/users' }))
-        .catch(error => console.error(error));
+    propertyChange: function(property, value) {
+      this.user[property] = value;
     }
   }
 };

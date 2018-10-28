@@ -1,155 +1,261 @@
 <template>
-  <table class="table table-striped table-bordered text-light table-hover">
-    <tbody>
-      <tr>
-        <td>
-          Активен
-        </td>
+  <div class="container">
+    <table class="table table-striped table-bordered text-light table-hover">
+      <tbody>
+        <tr>
+          <td>
+            Активен
+          </td>
 
-        <td>
-          <div class="form-check">
-            <input class="form-check-input" type="radio" name="isActive" id="yes" v-model="user.isActive" value="true">
-            <label class="form-check-label" for="yes">
-              Да
-            </label>
-          </div>
+          <td>
+            <div class="form-check">
+              <input
+                id="yes"
+                v-bind:checked="user.isActive"
+                class="form-check-input"
+                type="radio"
+                name="isActive"
+                value="true"
+                v-on:change="propertyChange('isActive', $event.target.value)">
+              <label
+                class="form-check-label"
+                for="yes">
+                Да
+              </label>
+            </div>
 
-          <div class="form-check">
-            <input class="form-check-input" type="radio" name="isActive" id="no" v-model="user.isActive" value="false">
-            <label class="form-check-label" for="no">
-              Нет
-            </label>
-          </div>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <label class="col-form-label" for="balance">Баланс</label>
-        </td>
+            <div class="form-check">
+              <input
+                id="no"
+                v-bind:checked="!user.isActive"
+                class="form-check-input"
+                type="radio"
+                name="isActive"
+                value="false"
+                v-on:change="propertyChange('isActive', $event.target.value)">
+              <label
+                class="form-check-label"
+                for="no">
+                Нет
+              </label>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <label
+              class="col-form-label"
+              for="balance">Баланс</label>
+          </td>
 
-        <td>
-          <input class="form-control" type="text" id="balance" placeholder="Баланс" v-model="user.balance">
-       </td>
-      </tr>
-      <tr>
-        <td>Ссылка на аватар</td>
+          <td>
+            <input
+              id="balance"
+              v-bind:value="user.balance"
+              class="form-control"
+              type="text"
+              placeholder="Баланс"
+              v-on:input="propertyChange('balance', $event.target.value)">
+          </td>
+        </tr>
+        <tr>
+          <td>Ссылка на аватар</td>
 
-        <td>
-          <input class="form-control" type="text" id="picture" placeholder="Ссылка на аватар" v-model="user.picture">
-        </td>
-      </tr>
+          <td>
+            <input
+              id="picture"
+              v-bind:value="user.picture"
+              class="form-control"
+              type="text"
+              placeholder="Ссылка на аватар"
+              v-on:input="propertyChange('picture', $event.target.value)">
+          </td>
+        </tr>
 
-      <tr>
-        <td>
-          <label class="col-form-label" for="age">Возраст</label>
-        </td>
+        <tr>
+          <td>
+            <label
+              class="col-form-label"
+              for="age">Возраст</label>
+          </td>
 
-        <td>
-          <input class="form-control" type="number" id="age" placeholder="Возраст" min="1" v-model="user.age">
-        </td>
-      </tr>
+          <td>
+            <input
+              id="age"
+              v-bind:value="user.age"
+              class="form-control"
+              type="number"
+              placeholder="Возраст"
+              min="1"
+              v-on:input="propertyChange('age', +$event.target.value)">
+          </td>
+        </tr>
 
-      <tr>
-        <td>Уровень доступа</td>
+        <tr>
+          <td>
+            <label
+              class="col-form-label"
+              for="accessLevel">Уровень доступа</label>
+          </td>
 
-        <td>
-          <div class="form-check">
-            <input class="form-check-input" type="radio" name="accessLevel" id="admin" v-model="user.accessLevel" value="admin">
-            <label class="form-check-label" for="admin">
-              Админ
-            </label>
-          </div>
+          <td>
+            <select
+              id="accessLevel"
+              v-bind:value="user.accessLevel"
+              class="form-control"
+              name="accessLevel"
+              v-on:change="propertyChange('accessLevel', $event.target.value)">
 
-          <div class="form-check">
-            <input class="form-check-input" type="radio" name="accessLevel" id="user" v-model="user.accessLevel" value="user">
-            <label class="form-check-label" for="user">
-              Пользователь
-            </label>
-          </div>
+              <option value="admin">Администратор</option>
+              <option value="user">Пользователь</option>
+              <option value="guest">Гость</option>
+            </select>
+          </td>
+        </tr>
 
-          <div class="form-check">
-            <input class="form-check-input" type="radio" name="accessLevel" id="guest" v-model="user.accessLevel" value="guest">
-            <label class="form-check-label" for="guest">
-              Гость
-            </label>
-          </div>
-        </td>
-      </tr>
+        <tr>
+          <td>
+            <label
+              class="col-form-label"
+              for="firstName">Имя</label>
+          </td>
 
-      <tr>
-        <td>
-          <label class="col-form-label" for="firstName">Имя</label>
-        </td>
+          <td>
+            <input
+              id="firstName"
+              v-bind:value="user.firstName"
+              class="form-control"
+              type="text"
+              placeholder="Имя"
+              v-on:input="propertyChange('firstName', $event.target.value)">
+          </td>
+        </tr>
 
-        <td>
-          <input class="form-control" type="text" id="firstName" placeholder="Имя" v-model="user.firstName">
-        </td>
-      </tr>
+        <tr>
+          <td>
+            <label
+              class="col-form-label"
+              for="lastName">Фамилия</label>
+          </td>
 
-      <tr>
-        <td>
-          <label class="col-form-label" for="lastName">Фамилия</label>
-        </td>
+          <td>
+            <input
+              id="lastName"
+              v-bind:value="user.lastName"
+              class="form-control"
+              type="text"
+              placeholder="Фамилия"
+              v-on:input="propertyChange('lastName', $event.target.value)">
+          </td>
+        </tr>
 
-        <td>
-          <input class="form-control" type="text" id="lastName" placeholder="Фамилия" v-model="user.lastName">
-        </td>
-      </tr>
+        <tr>
+          <td>
+            <label
+              class="col-form-label"
+              for="company">Компания</label>
+          </td>
 
-      <tr>
-        <td>
-          <label class="col-form-label" for="company">Компания</label>
-        </td>
+          <td>
+            <input
+              id="company"
+              v-bind:value="user.company"
+              class="form-control"
+              type="text"
+              placeholder="Компания"
+              v-on:input="propertyChange('company', $event.target.value)">
+          </td>
+        </tr>
 
-        <td>
-          <input class="form-control" type="text" id="company" placeholder="Компания" v-model="user.company">
-        </td>
-      </tr>
+        <tr>
+          <td>
+            <label
+              class="col-form-label"
+              for="email">E-Mail</label>
+          </td>
 
-      <tr>
-        <td>
-          <label class="col-form-label" for="email">E-Mail</label>
-        </td>
+          <td>
+            <input
+              id="email"
+              v-bind:value="user.email"
+              class="form-control"
+              type="email"
+              placeholder="E-Mail"
+              v-on:input="propertyChange('email', $event.target.value)">
+          </td>
+        </tr>
 
-        <td>
-          <input class="form-control" type="email" id="email" placeholder="E-Mail" v-model="user.email">
-        </td>
-      </tr>
+        <tr>
+          <td>
+            <label
+              class="col-form-label"
+              for="phone">Телефон</label>
+          </td>
 
-      <tr>
-        <td>
-          <label class="col-form-label" for="phone">Телефон</label>
-        </td>
+          <td>
+            <input
+              id="phone"
+              v-bind:value="user.phone"
+              class="form-control"
+              type="tel"
+              placeholder="Телефон"
+              v-on:input="propertyChange('phone', $event.target.value)">
+          </td>
+        </tr>
 
-        <td>
-          <input class="form-control" type="tel" id="phone" placeholder="Телефон" v-model="user.phone">
-        </td>
-      </tr>
+        <tr>
+          <td>
+            <label
+              class="col-form-label"
+              for="address">Адрес</label>
+          </td>
 
-      <tr>
-        <td>
-          <label class="col-form-label" for="address">Адрес</label>
-        </td>
+          <td>
+            <input
+              id="address"
+              v-bind:value="user.address"
+              class="form-control"
+              type="text"
+              placeholder="Адрес"
+              v-on:input="propertyChange('address', $event.target.value)">
+          </td>
+        </tr>
 
-        <td>
-          <input class="form-control" type="text" id="address" placeholder="Адрес" v-model="user.address">
-        </td>
-      </tr>
+        <tr>
+          <td>
+            <label
+              class="col-form-label"
+              for="about">О себе</label>
+          </td>
 
-      <tr>
-        <td>
-          <label class="col-form-label" for="about">О себе</label>
-        </td>
+          <td>
+            <textarea
+              id="about"
+              v-bind:value="user.about"
+              class="form-control"
+              v-on:input="propertyChange('about', $event.target.value)"></textarea>
+          </td>
+        </tr>
+      </tbody>
+    </table>
 
-        <td>
-          <textarea class="form-control" id="about" v-model="user.about"></textarea>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+    <button
+      v-if="isEditPage"
+      type="button"
+      class="btn btn-light mb-3"
+      v-on:click="editUser">Подтвердить</button>
+
+    <button
+      v-else-if="isAddPage"
+      type="button"
+      class="btn btn-light mb-3"
+      v-on:click="addUser">Добавить пользователя</button>
+  </div>
 </template>
 
 <script>
+import { ROUTES_NAMES } from '@/mixins/constants.js';
+
 export default {
   name: 'UserForm',
 
@@ -158,9 +264,30 @@ export default {
       type: Object,
       required: true
     }
+  },
+
+  computed: {
+    isEditPage: function() {
+      return this.$route.name === ROUTES_NAMES.editUser;
+    },
+
+    isAddPage: function() {
+      return this.$route.name === ROUTES_NAMES.addUser;
+    }
+  },
+
+  methods: {
+    editUser: function() {
+      this.$emit('edit-user');
+    },
+
+    addUser: function() {
+      this.$emit('add-user');
+    },
+
+    propertyChange: function(property, value) {
+      this.$emit('property-change', property, value);
+    }
   }
 };
 </script>
-
-<style>
-</style>

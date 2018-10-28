@@ -2,9 +2,10 @@
   <div class="container">
     <h3 class="text-white text-center mb-3">Добавление пользователя</h3>
 
-    <user-form v-bind:user="user" />
-
-    <button type="button" class="btn btn-light mb-3" v-on:click="addUser">Добавить пользователя</button>
+    <user-form
+      v-bind:user="user"
+      v-on:add-user="addUser"
+      v-on:property-change="propertyChange" />
   </div>
 </template>
 
@@ -22,7 +23,20 @@ export default {
 
   data: function() {
     return {
-      user: {}
+      user: {
+        isActive: false,
+        balance: '$0',
+        picture: '',
+        age: '',
+        accessLevel: 'guest',
+        firstName: '',
+        lastName: '',
+        company: '',
+        email: '',
+        phone: '',
+        address: '',
+        about: ''
+      }
     };
   },
 
@@ -31,11 +45,13 @@ export default {
       this.user.registered = moment().format('DD.MM.YYYY');
 
       axios
-        .post('http://localhost:3004/users', this.user, {
-          headers: { 'Content-Type': 'application/json' }
-        })
+        .post('http://localhost:3004/users', this.user)
         .then(() => this.$router.push({ path: '/users' }))
         .catch(error => console.error(error));
+    },
+
+    propertyChange: function(property, value) {
+      this.user[property] = value;
     }
   }
 };

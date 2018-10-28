@@ -14,11 +14,18 @@
     </thead>
 
     <tbody>
-      <tr class="users__body-row" v-for="(user, index) in users" v-bind:key="user.id">
-        <th scope="row">{{ index + 1 }}</th>
+      <tr
+        v-for="user in users"
+        v-bind:key="user.id">
 
-        <td class="users__avatar">
-          <img width="50" height="50" v-bind:src="user.picture || defaultPicture" v-bind:alt="getFullName(user)">
+        <th scope="row"></th>
+
+        <td>
+          <img
+            v-bind:src="user.picture || defaultPicture"
+            v-bind:alt="getFullName(user)"
+            width="50"
+            height="50">
         </td>
 
         <td>{{ user.firstName }}</td>
@@ -27,11 +34,17 @@
         <td>{{ user.registered }}</td>
 
         <td>
-          <a class="btn btn-light" v-bind:href="'/users/edit/' + user.id" v-tooltip="'Редактировать'">✎</a>
+          <a
+            v-tooltip="'Редактировать'"
+            v-bind:href="'/users/edit/' + user.id"
+            class="btn btn-light">✎</a>
         </td>
 
         <td>
-          <button class="btn btn-light" v-on:click="removeUser(user.id)" v-tooltip="'Удалить'">&times;</button>
+          <button
+            v-tooltip="'Удалить'"
+            class="btn btn-light"
+            v-on:click="removeUser(user.id)">&times;</button>
         </td>
       </tr>
     </tbody>

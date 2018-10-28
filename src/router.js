@@ -4,32 +4,46 @@ import Home from '@/views/Home.vue';
 import Users from '@/views/Users.vue';
 import AddUser from '@/views/AddUser.vue';
 import EditUser from '@/views/EditUser.vue';
+import NProgress from 'nprogress';
+import { ROUTES_NAMES } from '@/mixins/constants.js';
 
 Vue.use(Router);
 
-export default new Router({
+const router = new Router({
   linkExactActiveClass: 'active',
   mode: 'history',
   routes: [
     {
       path: '/',
-      name: 'home',
+      name: ROUTES_NAMES.home,
       component: Home
     },
     {
       path: '/users',
-      name: 'users',
+      name: ROUTES_NAMES.users,
       component: Users
     },
     {
       path: '/users/add',
-      name: 'addUser',
+      name: ROUTES_NAMES.addUser,
       component: AddUser
     },
     {
       path: '/users/edit/:id',
-      name: 'editUser',
+      name: ROUTES_NAMES.editUser,
       component: EditUser
     }
   ]
 });
+
+router.beforeResolve((to, from, next) => {
+  if (to.path) {
+    NProgress.start();
+  }
+
+  next();
+});
+
+router.afterEach(() => NProgress.done());
+
+export default router;

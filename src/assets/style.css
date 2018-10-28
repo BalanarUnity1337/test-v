@@ -3,3 +3,12 @@ body {
   background-color: #3a4247;
   overflow-y: scroll;
 }
+
+.table {
+  counter-reset: row-number;
+}
+
+[scope='row']::before {
+  counter-increment: row-number;
+  content: counter(row-number);
+}
