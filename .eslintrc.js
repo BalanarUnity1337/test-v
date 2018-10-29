@@ -7,9 +7,20 @@ module.exports = {
   rules: {
     'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'off',
     'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
-    'vue/v-on-style': 'off',
-    'vue/v-bind-style': 'off',
-    'vue/html-self-closing': 'off'
+    'vue/v-on-style': ['error', 'longform'],
+    'vue/v-bind-style': ['error', 'longform'],
+    'vue/html-self-closing': [
+      'error',
+      {
+        html: {
+          void: 'never',
+          normal: 'never',
+          component: 'always'
+        },
+        svg: 'always',
+        math: 'always'
+      }
+    ]
   },
   parserOptions: {
     parser: 'babel-eslint'

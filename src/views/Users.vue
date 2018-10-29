@@ -69,7 +69,7 @@ export default {
 
     removeUser: function(id) {
       axios
-        .delete(this.usersURI + id)
+        .delete(`${this.usersURI}${id}`)
         .then((this.users = this.users.filter(user => user.id !== id)))
         .catch(error => console.error(error));
     }

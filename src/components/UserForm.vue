@@ -238,24 +238,10 @@
         </tr>
       </tbody>
     </table>
-
-    <button
-      v-if="isEditPage"
-      type="button"
-      class="btn btn-light mb-3"
-      v-on:click="editUser">Подтвердить</button>
-
-    <button
-      v-else-if="isAddPage"
-      type="button"
-      class="btn btn-light mb-3"
-      v-on:click="addUser">Добавить пользователя</button>
   </div>
 </template>
 
 <script>
-import { ROUTES_NAMES } from '@/mixins/constants.js';
-
 export default {
   name: 'UserForm',
 
@@ -266,25 +252,7 @@ export default {
     }
   },
 
-  computed: {
-    isEditPage: function() {
-      return this.$route.name === ROUTES_NAMES.editUser;
-    },
-
-    isAddPage: function() {
-      return this.$route.name === ROUTES_NAMES.addUser;
-    }
-  },
-
   methods: {
-    editUser: function() {
-      this.$emit('edit-user');
-    },
-
-    addUser: function() {
-      this.$emit('add-user');
-    },
-
     propertyChange: function(property, value) {
       this.$emit('property-change', property, value);
     }

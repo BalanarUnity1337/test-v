@@ -6,6 +6,11 @@
       v-bind:user="user"
       v-on:add-user="addUser"
       v-on:property-change="propertyChange" />
+
+    <button
+      type="button"
+      class="btn btn-light mb-3"
+      v-on:click="addUser">Добавить пользователя</button>
   </div>
 </template>
 
@@ -36,7 +41,9 @@ export default {
         phone: '',
         address: '',
         about: ''
-      }
+      },
+
+      usersURI: 'http://localhost:3004/users/'
     };
   },
 
@@ -45,7 +52,7 @@ export default {
       this.user.registered = moment().format('DD.MM.YYYY');
 
       axios
-        .post('http://localhost:3004/users', this.user)
+        .post(this.usersURI, this.user)
         .then(() => this.$router.push({ path: '/users' }))
         .catch(error => console.error(error));
     },

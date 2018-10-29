@@ -11,6 +11,11 @@
         v-bind:user="user"
         v-on:edit-user="editUser"
         v-on:property-change="propertyChange" />
+
+      <button
+        type="button"
+        class="btn btn-light mb-3"
+        v-on:click="editUser">Подтвердить</button>
     </div>
   </div>
 </template>

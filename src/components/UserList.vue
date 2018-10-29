@@ -18,7 +18,7 @@
         v-for="user in users"
         v-bind:key="user.id">
 
-        <th scope="row"></th>
+        <td scope="row"></td>
 
         <td>
           <img
@@ -34,15 +34,16 @@
         <td>{{ user.registered }}</td>
 
         <td>
-          <a
+          <router-link
             v-tooltip="'Редактировать'"
-            v-bind:href="'/users/edit/' + user.id"
-            class="btn btn-light">✎</a>
+            v-bind:to="`/users/edit/${user.id}`"
+            class="btn btn-light" >✎</router-link>
         </td>
 
         <td>
           <button
             v-tooltip="'Удалить'"
+            type="button"
             class="btn btn-light"
             v-on:click="removeUser(user.id)">&times;</button>
         </td>
