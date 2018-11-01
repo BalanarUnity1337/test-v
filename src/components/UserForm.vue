@@ -11,12 +11,11 @@
             <div class="form-check">
               <input
                 id="yes"
-                v-bind:checked="user.isActive"
+                v-model="localUser.isActive"
                 class="form-check-input"
                 type="radio"
                 name="isActive"
-                value="true"
-                v-on:change="propertyChange('isActive', $event.target.value)">
+                value="true">
               <label
                 class="form-check-label"
                 for="yes">
@@ -27,12 +26,11 @@
             <div class="form-check">
               <input
                 id="no"
-                v-bind:checked="!user.isActive"
+                v-model="localUser.isActive"
                 class="form-check-input"
                 type="radio"
                 name="isActive"
-                value="false"
-                v-on:change="propertyChange('isActive', $event.target.value)">
+                value="false">
               <label
                 class="form-check-label"
                 for="no">
@@ -51,11 +49,10 @@
           <td>
             <input
               id="balance"
-              v-bind:value="user.balance"
+              v-model="localUser.balance"
               class="form-control"
               type="text"
-              placeholder="Баланс"
-              v-on:input="propertyChange('balance', $event.target.value)">
+              placeholder="Баланс">
           </td>
         </tr>
         <tr>
@@ -64,11 +61,10 @@
           <td>
             <input
               id="picture"
-              v-bind:value="user.picture"
+              v-model="localUser.picture"
               class="form-control"
               type="text"
-              placeholder="Ссылка на аватар"
-              v-on:input="propertyChange('picture', $event.target.value)">
+              placeholder="Ссылка на аватар">
           </td>
         </tr>
 
@@ -82,12 +78,11 @@
           <td>
             <input
               id="age"
-              v-bind:value="user.age"
+              v-model.number="localUser.age"
               class="form-control"
               type="number"
               placeholder="Возраст"
-              min="1"
-              v-on:input="propertyChange('age', +$event.target.value)">
+              min="1">
           </td>
         </tr>
 
@@ -101,10 +96,9 @@
           <td>
             <select
               id="accessLevel"
-              v-bind:value="user.accessLevel"
+              v-model="localUser.accessLevel"
               class="form-control"
-              name="accessLevel"
-              v-on:change="propertyChange('accessLevel', $event.target.value)">
+              name="accessLevel">
 
               <option value="admin">Администратор</option>
               <option value="user">Пользователь</option>
@@ -123,11 +117,10 @@
           <td>
             <input
               id="firstName"
-              v-bind:value="user.firstName"
+              v-model="localUser.firstName"
               class="form-control"
               type="text"
-              placeholder="Имя"
-              v-on:input="propertyChange('firstName', $event.target.value)">
+              placeholder="Имя">
           </td>
         </tr>
 
@@ -141,11 +134,10 @@
           <td>
             <input
               id="lastName"
-              v-bind:value="user.lastName"
+              v-model="localUser.lastName"
               class="form-control"
               type="text"
-              placeholder="Фамилия"
-              v-on:input="propertyChange('lastName', $event.target.value)">
+              placeholder="Фамилия">
           </td>
         </tr>
 
@@ -159,11 +151,10 @@
           <td>
             <input
               id="company"
-              v-bind:value="user.company"
+              v-model="localUser.company"
               class="form-control"
               type="text"
-              placeholder="Компания"
-              v-on:input="propertyChange('company', $event.target.value)">
+              placeholder="Компания">
           </td>
         </tr>
 
@@ -177,11 +168,10 @@
           <td>
             <input
               id="email"
-              v-bind:value="user.email"
+              v-model="localUser.email"
               class="form-control"
               type="email"
-              placeholder="E-Mail"
-              v-on:input="propertyChange('email', $event.target.value)">
+              placeholder="E-Mail">
           </td>
         </tr>
 
@@ -195,11 +185,10 @@
           <td>
             <input
               id="phone"
-              v-bind:value="user.phone"
+              v-model="localUser.phone"
               class="form-control"
               type="tel"
-              placeholder="Телефон"
-              v-on:input="propertyChange('phone', $event.target.value)">
+              placeholder="Телефон">
           </td>
         </tr>
 
@@ -213,11 +202,10 @@
           <td>
             <input
               id="address"
-              v-bind:value="user.address"
+              v-model="localUser.address"
               class="form-control"
               type="text"
-              placeholder="Адрес"
-              v-on:input="propertyChange('address', $event.target.value)">
+              placeholder="Адрес">
           </td>
         </tr>
 
@@ -231,9 +219,8 @@
           <td>
             <textarea
               id="about"
-              v-bind:value="user.about"
-              class="form-control"
-              v-on:input="propertyChange('about', $event.target.value)"></textarea>
+              v-model="localUser.about"
+              class="form-control"></textarea>
           </td>
         </tr>
       </tbody>
@@ -245,6 +232,10 @@
 export default {
   name: 'UserForm',
 
+  model: {
+    prop: 'user'
+  },
+
   props: {
     user: {
       type: Object,
@@ -252,9 +243,34 @@ export default {
     }
   },
 
+  data: () => ({
+    localUser: null
+  }),
+
+  watch: {
+    localUser: {
+      handler: 'updateUser',
+      deep: true
+    },
+
+    user: function(newVal) {
+      this.localUser = Object.assign({}, newVal);
+    }
+  },
+
+  created: function() {
+    this.localUser = Object.assign({}, this.user);
+  },
+
   methods: {
-    propertyChange: function(property, value) {
-      this.$emit('property-change', property, value);
+    updateUser: function(newVal, oldVal) {
+      if (!this.isUsersEqual(newVal, oldVal)) {
+        this.$emit('input', Object.assign({}, this.localUser));
+      }
+    },
+
+    isUsersEqual: function(newUser, oldUser) {
+      return JSON.stringify(newUser) === JSON.stringify(oldUser);
     }
   }
 };

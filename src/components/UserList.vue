@@ -1,15 +1,15 @@
 <template>
-  <table class="table table-striped table-dark">
+  <table class="table table-striped table-dark mt-2">
     <thead>
       <tr>
         <th scope="col">#</th>
-        <th scope="col">Аватар</th>
         <th scope="col">Имя</th>
         <th scope="col">Фамилия</th>
-        <th scope="col">Компания</th>
+        <th scope="col">Активен</th>
+        <th scope="col">Баланс</th>
+        <th scope="col">Телефон</th>
         <th scope="col">Дата регистрации</th>
-        <th scope="col"></th>
-        <th scope="col"></th>
+        <th></th>
       </tr>
     </thead>
 
@@ -18,27 +18,19 @@
         v-for="user in users"
         v-bind:key="user.id">
 
-        <td scope="row"></td>
-
         <td>
-          <img
-            v-bind:src="user.picture || defaultPicture"
-            v-bind:alt="getFullName(user)"
-            width="50"
-            height="50">
+          <router-link
+            v-tooltip="'Редактировать'"
+            v-bind:to="`/users/${user.id}/edit`"
+            class="text-white" >#{{ user.id }} ✎</router-link>
         </td>
 
         <td>{{ user.firstName }}</td>
         <td>{{ user.lastName }}</td>
-        <td>{{ user.company }}</td>
+        <td>{{ user.isActive }}</td>
+        <td>{{ user.balance }}</td>
+        <td>{{ user.phone }}</td>
         <td>{{ user.registered }}</td>
-
-        <td>
-          <router-link
-            v-tooltip="'Редактировать'"
-            v-bind:to="`/users/edit/${user.id}`"
-            class="btn btn-light" >✎</router-link>
-        </td>
 
         <td>
           <button
@@ -53,8 +45,6 @@
 </template>
 
 <script>
-import defaultPicture from '@/assets/default.png';
-
 export default {
   name: 'UserList',
 
@@ -63,12 +53,6 @@ export default {
       type: Array,
       required: true
     }
-  },
-
-  data: function() {
-    return {
-      defaultPicture: defaultPicture
-    };
   },
 
   methods: {

@@ -1,9 +1,5 @@
 import Vue from 'vue';
 import Router from 'vue-router';
-import Home from '@/views/Home.vue';
-import Users from '@/views/Users.vue';
-import AddUser from '@/views/AddUser.vue';
-import EditUser from '@/views/EditUser.vue';
 import NProgress from 'nprogress';
 import { ROUTES_NAMES } from '@/mixins/constants.js';
 
@@ -16,22 +12,22 @@ const router = new Router({
     {
       path: '/',
       name: ROUTES_NAMES.home,
-      component: Home
+      component: () => import('@/views/Home.vue')
     },
     {
-      path: '/users',
+      path: '/users/page/:page',
       name: ROUTES_NAMES.users,
-      component: Users
+      component: () => import('@/views/Users.vue')
     },
     {
       path: '/users/add',
       name: ROUTES_NAMES.addUser,
-      component: AddUser
+      component: () => import('@/views/AddUser.vue')
     },
     {
-      path: '/users/edit/:id',
+      path: '/users/:id/edit',
       name: ROUTES_NAMES.editUser,
-      component: EditUser
+      component: () => import('@/views/EditUser.vue')
     }
   ]
 });

@@ -23,7 +23,7 @@
 
           <router-link
             tag="li"
-            to="/users">
+            to="/users/page/1">
             <a class="nav-link">Список пользователей</a>
           </router-link>
 

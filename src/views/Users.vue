@@ -5,18 +5,11 @@
       class="display-4 text-white text-center">Список пользователей пока пуст</div>
 
     <div v-else>
-      <div class="row justify-content-between mb-3">
-        <h3 class="text-white text-center">Список пользователей: {{ usersCount }}</h3>
+      <h3 class="text-white">Список пользователей</h3>
 
-        <button
-          class="btn btn-secondary"
-          type="button"
-          v-on:click="toggleTableVisibility">{{ toggleButtonStateText }}</button>
-      </div>
-
-      <user-list
-        v-if="tableVisibility"
+      <smart-table
         v-bind:users="users"
+        v-on:update-table="updateTable"
         v-on:remove-user="removeUser" />
     </div>
   </div>
@@ -24,30 +17,25 @@
 
 <script>
 import axios from 'axios';
-import UserList from '@/components/UserList.vue';
 
 export default {
   name: 'UsersPage',
 
   components: {
-    'user-list': UserList
+    'smart-table': () => import('@/components/SmartTable.vue')
   },
 
   data: function() {
     return {
       users: [],
       tableVisibility: true,
-      usersURI: 'http://localhost:3004/users/'
+      usersURI: 'http://localhost:3004/users'
     };
   },
 
   computed: {
     usersCount: function() {
       return this.users.length;
-    },
-
-    toggleButtonStateText: function() {
-      return this.tableVisibility ? 'Скрыть таблицу' : 'Показать таблицу';
     }
   },
 
@@ -63,15 +51,15 @@ export default {
         .catch(error => console.error(error));
     },
 
-    toggleTableVisibility: function() {
-      this.tableVisibility = !this.tableVisibility;
-    },
-
     removeUser: function(id) {
       axios
-        .delete(`${this.usersURI}${id}`)
+        .delete(`${this.usersURI}/${id}`)
         .then((this.users = this.users.filter(user => user.id !== id)))
         .catch(error => console.error(error));
+    },
+
+    updateTable: function() {
+      this.getUsers();
     }
   }
 };

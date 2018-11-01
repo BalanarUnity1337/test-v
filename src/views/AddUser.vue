@@ -3,9 +3,7 @@
     <h3 class="text-white text-center mb-3">Добавление пользователя</h3>
 
     <user-form
-      v-bind:user="user"
-      v-on:add-user="addUser"
-      v-on:property-change="propertyChange" />
+      v-model="user" />
 
     <button
       type="button"
@@ -15,7 +13,6 @@
 </template>
 
 <script>
-import UserForm from '@/components/UserForm.vue';
 import axios from 'axios';
 import moment from 'moment';
 
@@ -23,7 +20,7 @@ export default {
   name: 'AddUserPage',
 
   components: {
-    'user-form': UserForm
+    'user-form': () => import('@/components/UserForm.vue')
   },
 
   data: function() {
@@ -55,10 +52,6 @@ export default {
         .post(this.usersURI, this.user)
         .then(() => this.$router.push({ path: '/users' }))
         .catch(error => console.error(error));
-    },
-
-    propertyChange: function(property, value) {
-      this.user[property] = value;
     }
   }
 };
