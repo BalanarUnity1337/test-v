@@ -3,3 +3,17 @@ body {
   background-color: #3a4247;
   overflow-y: scroll;
 }
+
+.error {
+  color: #f57f6c;
+}
+
+.form-control.error {
+  border-color: #f57f6c;
+}
+
+.form-control.error:focus {
+  border-color: #f57f6c;
+  color: #f57f6c;
+  box-shadow: 0 0 0 0.2rem rgba(245, 127, 108, 0.25);
+}

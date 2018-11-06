@@ -11,13 +11,18 @@
   "dependencies": {
     "axios": "^0.18.0",
     "bootstrap": "^4.1.3",
+    "date-fns": "^1.29.0",
+    "dropzone": "^5.5.1",
+    "flatpickr": "^4.5.2",
     "moment": "^2.22.2",
     "nprogress": "^0.2.0",
     "proschet": "^1.0.1",
     "v-tooltip": "^2.0.0-rc.33",
     "vue": "^2.5.17",
     "vue-async-computed": "^3.4.1",
-    "vue-router": "^3.0.1"
+    "vue-router": "^3.0.1",
+    "vue2-editor": "^2.6.6",
+    "vuelidate": "^0.7.4"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^3.0.5",

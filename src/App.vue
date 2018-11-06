@@ -29,6 +29,12 @@
 
           <router-link
             tag="li"
+            to="/phonebook/page/1">
+            <a class="nav-link">Телефонная книга</a>
+          </router-link>
+
+          <router-link
+            tag="li"
             to="/users/add">
             <a class="nav-link">Добавить пользователя</a>
           </router-link>

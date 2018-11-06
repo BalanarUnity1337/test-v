@@ -1,20 +1,30 @@
 <template>
-  <div class="container">
+  <div class="container mb-3">
     <h3 class="text-white text-center mb-3">Добавление пользователя</h3>
 
     <user-form
-      v-model="user" />
+      v-model="user">
+      <template
+        slot="footer-buttons"
+        slot-scope="{ hasError }">
+        <button
+          type="button"
+          class="btn btn-light mr-4"
+          v-on:click="backToUsers">Назад</button>
 
-    <button
-      type="button"
-      class="btn btn-light mb-3"
-      v-on:click="addUser">Добавить пользователя</button>
+        <button
+          v-bind:disabled="hasError"
+          type="button"
+          class="btn btn-light"
+          v-on:click="addUser">Добавить пользователя</button>
+      </template>
+    </user-form>
   </div>
 </template>
 
 <script>
 import axios from 'axios';
-import moment from 'moment';
+import { format } from 'date-fns';
 
 export default {
   name: 'AddUserPage',
@@ -23,13 +33,13 @@ export default {
     'user-form': () => import('@/components/UserForm.vue')
   },
 
-  data: function() {
+  data() {
     return {
       user: {
         isActive: false,
         balance: '$0',
         picture: '',
-        age: '',
+        birthday: '',
         accessLevel: 'guest',
         firstName: '',
         lastName: '',
@@ -45,13 +55,17 @@ export default {
   },
 
   methods: {
-    addUser: function() {
-      this.user.registered = moment().format('DD.MM.YYYY');
+    addUser() {
+      this.user.registered = format(new Date(), 'DD.MM.YYYY');
 
       axios
         .post(this.usersURI, this.user)
-        .then(() => this.$router.push({ path: '/users' }))
+        .then(() => this.backToUsers())
         .catch(error => console.error(error));
+    },
+
+    backToUsers() {
+      this.$router.push({ path: '/users/page/1' });
     }
   }
 };

@@ -8,24 +8,34 @@
       <h3 class="text-white text-center mb-3">Редактирование пользователя</h3>
 
       <user-form
-        v-model="user" />
+        v-model="user">
+        <template
+          slot="footer-buttons"
+          slot-scope="{ hasError }">
+          <button
+            type="button"
+            class="btn btn-light mr-4"
+            v-on:click="backToUsers">Назад</button>
+
+          <button
+            v-bind:disabled="hasError"
+            type="button"
+            class="btn btn-light"
+            v-on:click="editUser">Подтвердить</button>
+        </template>
+      </user-form>
+    </div>
+
+    <div class="row justify-content-between mt-3">
+      <button
+        class="btn btn-light"
+        type="button"
+        v-on:click="prevUser">Предыдущий пользователь</button>
 
       <button
+        class="btn btn-light"
         type="button"
-        class="btn btn-light mb-3"
-        v-on:click="editUser">Подтвердить</button>
-
-      <div class="row justify-content-between">
-        <button
-          v-bind:disabled="!isPrevBtnActive"
-          class="btn btn-light"
-          v-on:click="switchUser(id - 1)">Предыдущий пользователь</button>
-
-        <button
-          v-bind:disabled="!isNextBtnActive"
-          class="btn btn-light"
-          v-on:click="switchUser(id + 1)">Следующий пользователь</button>
-      </div>
+        v-on:click="nextUser">Следующий пользователь</button>
     </div>
   </div>
 </template>
@@ -40,25 +50,20 @@ export default {
     'user-form': () => import('@/components/UserForm.vue')
   },
 
-  data: function() {
+  data() {
     return {
       user: null,
-      usersURI: 'http://localhost:3004/users',
-      isNextBtnActive: true
+      usersURI: 'http://localhost:3004/users'
     };
   },
 
   computed: {
-    id: function() {
+    id() {
       return Number(this.$route.params.id);
     },
 
-    userIdURI: function() {
+    userIdURI() {
       return `${this.usersURI}/${this.id}`;
-    },
-
-    isPrevBtnActive: function() {
-      return this.id > 0;
     }
   },
 
@@ -66,27 +71,42 @@ export default {
     $route: 'loadUser'
   },
 
-  mounted: function() {
+  mounted() {
     this.loadUser();
   },
 
   methods: {
-    loadUser: function() {
+    loadUser() {
       axios
         .get(this.userIdURI)
         .then(response => (this.user = response.data))
-        .catch(error => console.error(error));
+        .catch(error => {
+          this.user = null;
+          console.error(error);
+        });
     },
 
-    editUser: function() {
+    editUser() {
       axios
         .patch(this.userIdURI, this.user)
-        .then(() => this.$router.push({ path: '/users' }))
+        .then(() => this.backToUsers())
         .catch(error => console.error(error));
     },
 
-    switchUser: function(toUser) {
+    prevUser() {
+      this.switchUser(this.id - 1);
+    },
+
+    nextUser() {
+      this.switchUser(this.id + 1);
+    },
+
+    switchUser(toUser) {
       this.$router.push({ name: 'editUser', params: { id: toUser } });
+    },
+
+    backToUsers() {
+      this.$router.push({ path: '/users/page/1' });
     }
   }
 };

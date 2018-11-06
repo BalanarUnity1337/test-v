@@ -2,11 +2,11 @@
   <nav>
     <ul class="pagination">
       <li
-        v-bind:class="{ 'disabled': !isPrevBtnActive }"
+        v-bind:class="{ 'disabled': isPrevBtnDisabled }"
         class="page-item">
         <a
           class="page-link"
-          v-on:click.prevent="paginationClick(localCurrentPage - 1)" >
+          v-on:click.prevent="paginationPrev" >
           <span>&laquo;</span>
         </a>
       </li>
@@ -14,19 +14,19 @@
       <li
         v-for="numberPageLink in pageLinks"
         v-bind:key="numberPageLink"
-        v-bind:class="{ 'active': numberPageLink == localCurrentPage }"
+        v-bind:class="{ 'active': numberPageLink === page }"
         class="page-item">
         <a
           class="page-link"
-          v-on:click.prevent="paginationClick(numberPageLink)">{{ numberPageLink }}</a>
+          v-on:click.prevent="paginationLinkClick(numberPageLink)">{{ numberPageLink }}</a>
       </li>
 
       <li
-        v-bind:class="{ 'disabled': !isNextBtnActive }"
+        v-bind:class="{ 'disabled': isNextBtnDisabled }"
         class="page-item">
         <a
           class="page-link"
-          v-on:click.prevent="paginationClick(localCurrentPage + 1)" >
+          v-on:click.prevent="paginationNext" >
           <span>&raquo;</span>
         </a>
       </li>
@@ -36,77 +36,80 @@
 
 <script>
 export default {
-  name: 'Pagination',
-
-  model: {
-    prop: 'currentPage'
-  },
+  name: 'ContentPagination',
 
   props: {
-    currentPage: {
+    page: {
       type: Number,
       required: true
     },
 
-    totalCount: {
+    total: {
       type: Number,
       required: true
     },
 
-    rowsPerPage: {
+    limit: {
       type: Number,
       required: true
     }
   },
 
-  data: () => ({
-    pageRange: 2,
-    localCurrentPage: null
-  }),
+  data() {
+    return {
+      pageRange: 2
+    };
+  },
 
   computed: {
-    numberPageLinks: function() {
-      return Math.ceil(this.totalCount / this.rowsPerPage);
+    numberPageLinks() {
+      return Math.ceil(this.total / this.limit);
     },
 
-    isPrevBtnActive: function() {
-      return this.localCurrentPage > 1;
+    isPrevBtnDisabled() {
+      return this.page <= 1;
     },
 
-    isNextBtnActive: function() {
-      return this.localCurrentPage < this.numberPageLinks;
+    isNextBtnDisabled() {
+      return this.page >= this.numberPageLinks;
     },
 
-    pageLinks: function() {
+    pageLinks() {
       return this.calculationPositionOfPageLinks(
-        this.localCurrentPage,
+        this.page,
         this.pageRange,
         this.numberPageLinks
       );
     }
   },
 
-  watch: {
-    localCurrentPage: function() {
-      this.$emit('input', this.localCurrentPage);
-    }
-  },
-
-  created: function() {
-    this.localCurrentPage = this.currentPage;
-  },
-
   methods: {
-    paginationClick: function(toPage) {
-      this.localCurrentPage = toPage;
-      this.$emit('pagination-click', toPage);
+    paginationPrev() {
+      this.paginationClick({
+        toPage: this.page - 1,
+        name: this.$route.name
+      });
     },
 
-    calculationPositionOfPageLinks: function(
-      currentPage,
-      pageRange,
-      totalPageLinks
-    ) {
+    paginationNext() {
+      this.paginationClick({
+        toPage: this.page + 1,
+        name: this.$route.name
+      });
+    },
+
+    paginationLinkClick(toPage) {
+      this.paginationClick({
+        toPage: toPage,
+        name: this.$route.name
+      });
+    },
+
+    paginationClick(page) {
+      this.$emit('pagination-click', page);
+    },
+
+    calculationPositionOfPageLinks(currentPage, pageRange, totalPageLinks) {
       var rangeStart = currentPage - pageRange;
       var rangeEnd = currentPage + pageRange;
 

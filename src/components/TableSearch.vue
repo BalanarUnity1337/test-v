@@ -3,10 +3,11 @@
     <label for="last-name-filter">Поиск по фамилии</label>
     <input
       id="last-name-filter"
-      v-model="localFilterValue"
+      v-bind:value="filterValue"
       class="form-control"
       type="text"
-      placeholder="Введите фамилию">
+      placeholder="Введите фамилию"
+      v-on:input="updateFilterValue($event.target.value)">
   </div>
 </template>
 
@@ -25,21 +26,9 @@ export default {
     }
   },
 
-  data: () => ({
-    localFilterValue: ''
-  }),
-
-  watch: {
-    localFilterValue: 'updateFilterValue'
-  },
-
-  created: function() {
-    this.localFilterValue = this.filterValue;
-  },
-
   methods: {
-    updateFilterValue: function() {
-      this.$emit('input', this.localFilterValue);
+    updateFilterValue(value) {
+      this.$emit('input', value);
     }
   }
 };

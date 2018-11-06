@@ -2,32 +2,23 @@
   <div class="container">
     <div
       v-if="!usersExist"
-      class="display-4 text-white text-center">Список пользователей пока пуст</div>
+      class="display-4 text-white text-center">Телефонная книга пока пуст</div>
 
     <div v-else>
-      <h3 class="text-white">Список пользователей</h3>
+      <h3 class="text-white">Телефонная книга</h3>
 
       <smart-table
         v-bind:users="users"
         v-model.number="limit"
-        v-bind:filter-value="filterValue"
         v-bind:total="totalInCollection"
         v-bind:page="currentPage"
         v-bind:users-total="usersTotal"
         v-on:update-table="getUsers"
-        v-on:remove-user="removeUser"
-        v-on:update-filter="updateFilter" >
+        v-on:filter-changed="getUsers" >
         <template slot="table-header">
-          <slot name="table-header">
-            <th scope="col">#</th>
-            <th scope="col">Имя</th>
-            <th scope="col">Фамилия</th>
-            <th scope="col">Активен</th>
-            <th scope="col">Баланс</th>
-            <th scope="col">Телефон</th>
-            <th scope="col">Дата регистрации</th>
-            <th></th>
-          </slot>
+          <th scope="col">#</th>
+          <th scope="col">Фамилия</th>
+          <th scope="col">Телефон</th>
         </template>
 
         <template
@@ -40,20 +31,8 @@
               class="text-white" >#{{ user.id }} ✎</router-link>
           </td>
 
-          <td>{{ user.firstName }}</td>
           <td>{{ user.lastName }}</td>
-          <td>{{ user.isActive }}</td>
-          <td>{{ user.balance }}</td>
           <td>{{ user.phone }}</td>
-          <td>{{ user.registered }}</td>
-
-          <td>
-            <button
-              v-tooltip="'Удалить'"
-              type="button"
-              class="btn btn-light"
-              v-on:click="removeUser(user.id)">&times;</button>
-          </td>
         </template>
       </smart-table>
     </div>
@@ -64,7 +43,7 @@
 import axios from 'axios';
 
 export default {
-  name: 'UsersPage',
+  name: 'PhoneBook',
 
   components: {
     'smart-table': () => import('@/components/SmartTable.vue')
@@ -74,7 +53,6 @@ export default {
     return {
       users: [],
       usersURI: 'http://localhost:3004/users',
-      filterValue: '',
       usersTotal: 0,
       currentPage: 1,
       limit: 5,
@@ -93,10 +71,6 @@ export default {
 
     url() {
       return `${this.usersURI}?_page=${this.currentPage}&_limit=${this.limit}`;
-    },
-
-    urlWithFilter() {
-      return `${this.url}&q=${this.filterValue}`;
     }
   },
 
@@ -108,10 +82,6 @@ export default {
 
     limit() {
       this.getUsers();
-    },
-
-    filterValue() {
-      this.getUsers();
     }
   },
 
@@ -120,10 +90,10 @@ export default {
   },
 
   methods: {
-    getUsers() {
-      if (this.filterValue) {
+    getUsers(filterValue) {
+      if (filterValue) {
         axios
-          .get(this.urlWithFilter)
+          .get(`${this.url}&q=${filterValue}`)
           .then(response => this.onLoadUsersFiltered(response))
           .catch(error => console.error(error));
       } else {
@@ -144,17 +114,6 @@ export default {
     onLoadUsersFiltered(response) {
       this.totalInCollection = Number(response.headers['x-total-count']);
       this.users = response.data;
-    },
-
-    removeUser(id) {
-      axios
-        .delete(`${this.usersURI}/${id}`)
-        .then(() => this.getUsers())
-        .catch(error => console.error(error));
-    },
-
-    updateFilter(value) {
-      this.filterValue = value;
     }
   }
 };

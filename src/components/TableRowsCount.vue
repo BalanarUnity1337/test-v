@@ -1,10 +1,14 @@
 <template>
   <div class="ml-3">
-    <input
-      v-model.number="localCount"
+    <select
+      v-bind:value="count"
       class="form-control mb-2"
-      type="number"
-      min="1">
+      v-on:change="updateCount($event.target.value)">
+      <option
+        v-for="(rowsCount, index) in rowsCountList"
+        v-bind:key="index"
+        v-bind:value="rowsCount.value" >{{ rowsCount.text }}</option>
+    </select>
 
     <span>Выбрано элементов на страницу: {{ count }}</span>
   </div>
@@ -25,21 +29,20 @@ export default {
     }
   },
 
-  data: () => ({
-    localCount: null
-  }),
-
-  watch: {
-    localCount: 'updateCount'
-  },
-
-  created: function() {
-    this.localCount = this.count;
+  data() {
+    return {
+      rowsCountList: [
+        { text: 2, value: 2 },
+        { text: 5, value: 5 },
+        { text: 10, value: 10 },
+        { text: 20, value: 20 }
+      ]
+    };
   },
 
   methods: {
-    updateCount: function() {
-      this.$emit('input', this.localCount);
+    updateCount(value) {
+      this.$emit('input', Number(value));
     }
   }
 };

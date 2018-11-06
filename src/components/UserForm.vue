@@ -8,35 +8,7 @@
           </td>
 
           <td>
-            <div class="form-check">
-              <input
-                id="yes"
-                v-model="localUser.isActive"
-                class="form-check-input"
-                type="radio"
-                name="isActive"
-                value="true">
-              <label
-                class="form-check-label"
-                for="yes">
-                Да
-              </label>
-            </div>
-
-            <div class="form-check">
-              <input
-                id="no"
-                v-model="localUser.isActive"
-                class="form-check-input"
-                type="radio"
-                name="isActive"
-                value="false">
-              <label
-                class="form-check-label"
-                for="no">
-                Нет
-              </label>
-            </div>
+            <checkbox v-model="localUser.isActive" />
           </td>
         </tr>
         <tr>
@@ -56,15 +28,10 @@
           </td>
         </tr>
         <tr>
-          <td>Ссылка на аватар</td>
+          <td>Аватар</td>
 
           <td>
-            <input
-              id="picture"
-              v-model="localUser.picture"
-              class="form-control"
-              type="text"
-              placeholder="Ссылка на аватар">
+            <image-upload v-model="localUser.picture"/>
           </td>
         </tr>
 
@@ -72,18 +39,14 @@
           <td>
             <label
               class="col-form-label"
-              for="age">Возраст</label>
+              for="age">День рождения</label>
           </td>
 
           <td>
-            <input
-              id="age"
-              v-model.number="localUser.age"
-              class="form-control"
-              type="number"
-              placeholder="Возраст"
-              min="1">
+            <datepicker v-model="localUser.birthday" />
           </td>
+
+
         </tr>
 
         <tr>
@@ -100,9 +63,11 @@
               class="form-control"
               name="accessLevel">
 
-              <option value="admin">Администратор</option>
-              <option value="user">Пользователь</option>
-              <option value="guest">Гость</option>
+              <option
+                v-for="(accessLevel, index) in accessLevelList"
+                v-bind:value="accessLevel.value"
+                v-bind:key="index" >{{ accessLevel.text }}</option>
+
             </select>
           </td>
         </tr>
@@ -117,10 +82,23 @@
           <td>
             <input
               id="firstName"
-              v-model="localUser.firstName"
+              v-model.trim="$v.localUser.firstName.$model"
+              v-bind:class="{ 'error': $v.localUser.firstName.$error }"
               class="form-control"
               type="text"
               placeholder="Имя">
+
+            <div
+              v-if="!$v.localUser.firstName.required"
+              class="error">Пожалуйста, укажите имя</div>
+
+            <div
+              v-if="!$v.localUser.firstName.minLength"
+              class="error">Имя должно содержать не менее {{ $v.localUser.firstName.$params.minLength.min }} букв.</div>
+
+            <div
+              v-if="!$v.localUser.firstName.startsWithUpperCase"
+              class="error">Имя должно начинаться с большой буквы</div>
           </td>
         </tr>
 
@@ -134,10 +112,23 @@
           <td>
             <input
               id="lastName"
-              v-model="localUser.lastName"
+              v-model="$v.localUser.lastName.$model"
+              v-bind:class="{ 'error': $v.localUser.lastName.$error }"
               class="form-control"
               type="text"
               placeholder="Фамилия">
+
+            <div
+              v-if="!$v.localUser.lastName.required"
+              class="error">Пожалуйста, укажите фамилию</div>
+
+            <div
+              v-if="!$v.localUser.lastName.minLength"
+              class="error">Фамилия должна содержать не менее {{ $v.localUser.lastName.$params.minLength.min }}</div>
+
+            <div
+              v-if="!$v.localUser.lastName.startsWithUpperCase"
+              class="error">Фамилия должна начинаться с большой буквы</div>
           </td>
         </tr>
 
@@ -168,10 +159,19 @@
           <td>
             <input
               id="email"
-              v-model="localUser.email"
+              v-model.trim="$v.localUser.email.$model"
+              v-bind:class="{ 'error': $v.localUser.email.$error }"
               class="form-control"
               type="email"
               placeholder="E-Mail">
+
+            <div
+              v-if="!$v.localUser.email.required"
+              class="error">Пожалуйста, заполните поле</div>
+
+            <div
+              v-if="!$v.localUser.email.email"
+              class="error">Введите правильный E-Mail адрес</div>
           </td>
         </tr>
 
@@ -213,24 +213,43 @@
           <td>
             <label
               class="col-form-label"
-              for="about">О себе</label>
+              for="about">Биография</label>
           </td>
 
           <td>
-            <textarea
-              id="about"
-              v-model="localUser.about"
-              class="form-control"></textarea>
+            <quill-editor v-model="localUser.about" />
           </td>
         </tr>
       </tbody>
     </table>
+
+    <div
+      v-if="$v.$anyError"
+      class="error mb-3">Проверьте правильность заполения полей формы</div>
+
+    <slot
+      v-bind:has-error="$v.$anyError"
+      name="footer-buttons"></slot>
   </div>
 </template>
 
 <script>
+import Vue from 'vue';
+import Vuelidate from 'vuelidate';
+import { required, minLength, email } from 'vuelidate/lib/validators';
+import startsWithUpperCase from '@/mixins/StartsWithUpperCase.js';
+
+Vue.use(Vuelidate);
+
 export default {
   name: 'UserForm',
+
+  components: {
+    datepicker: () => import('@/components/DatePicker.vue'),
+    checkbox: () => import('@/components/CheckBox.vue'),
+    'image-upload': () => import('@/components/ImageUpload.vue'),
+    'quill-editor': () => import('@/components/QuillEditor.vue')
+  },
 
   model: {
     prop: 'user'
@@ -243,34 +262,58 @@ export default {
     }
   },
 
-  data: () => ({
-    localUser: null
-  }),
+  data() {
+    return {
+      localUser: null,
+      accessLevelList: [
+        { text: 'Администратор', value: 'admin' },
+        { text: 'Пользователь', value: 'user' },
+        { text: 'Гость', value: 'guest' }
+      ]
+    };
+  },
 
   watch: {
     localUser: {
       handler: 'updateUser',
       deep: true
-    },
-
-    user: function(newVal) {
-      this.localUser = Object.assign({}, newVal);
     }
   },
 
-  created: function() {
+  created() {
     this.localUser = Object.assign({}, this.user);
   },
 
-  methods: {
-    updateUser: function(newVal, oldVal) {
-      if (!this.isUsersEqual(newVal, oldVal)) {
-        this.$emit('input', Object.assign({}, this.localUser));
-      }
-    },
+  mounted() {
+    this.$v.$touch();
+  },
 
-    isUsersEqual: function(newUser, oldUser) {
-      return JSON.stringify(newUser) === JSON.stringify(oldUser);
+  methods: {
+    updateUser(newVal, oldVal) {
+      if (!this.isUsersEqual(newVal, oldVal)) {
+        this.$emit('input', this.localUser);
+      }
+    }
+  },
+
+  validations: {
+    localUser: {
+      firstName: {
+        required,
+        minLength: minLength(3),
+        startsWithUpperCase
+      },
+
+      lastName: {
+        required,
+        minLength: minLength(3),
+        startsWithUpperCase
+      },
+
+      email: {
+        required,
+        email
+      }
     }
   }
 };

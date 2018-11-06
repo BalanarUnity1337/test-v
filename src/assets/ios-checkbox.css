@@ -1,0 +1,155 @@
+/**
+  * iOs style Checkbox v1.2 on CSS3 (no JS)
+  * http://do-sites.ru
+  *
+  * Copyright 2016, Klyatov Sergey - sergey@do-sites.ru
+  *
+  * Released under the MIT license - http://opensource.org/licenses/MIT
+ */
+
+/** RESET AND LAYOUT
+===================================*/
+
+/** BASIC
+===================================*/
+.ios-checkbox {
+  /* this .ios-checkbox-wrapper input[type^="checkbox"] */
+  display: none;
+}
+
+.ios-checkbox-wrapper {
+  white-space: nowrap;
+}
+
+.ios-checkbox-wrapper label {
+  display: inline-block;
+  line-height: 32px;
+}
+
+/** THEME IOS CHECKBOX
+===================================*/
+.ios-checkbox-item {
+  float: left;
+  position: relative;
+  width: 58px;
+  height: 32px;
+  border: 1px solid #aaa;
+  border-radius: 20px;
+  background: #aaa;
+  cursor: pointer;
+
+  -webkit-transition: all 0.3s linear 0s;
+  -moz-transition: all 0.3s linear 0s;
+  -o-transition: all 0.3s linear 0s;
+  transition: all 0.3s linear 0s;
+}
+
+.ios-checkbox-item:before {
+  content: '';
+  position: absolute;
+  right: 100%;
+  z-index: 1;
+  width: 30px;
+  height: 30px;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 1px 1px 2px 1px rgba(0, 0, 0, 0.3);
+
+  -webkit-transform: translateX(100%);
+  -moz-transform: translateX(100%);
+  -ms-transform: translateX(100%);
+  -o-transform: translateX(100%);
+  transform: translateX(100%);
+
+  -webkit-transition: right 0.3s ease, -webkit-transform 0.2s ease 0.1s,
+    box-shadow 0.2s linear;
+  -moz-transition: right 0.3s ease, -moz-transform 0.2s ease 0.1s,
+    box-shadow 0.2s linear;
+  -o-transition: right 0.3s ease, -o-transform 0.2s ease 0.1s,
+    box-shadow 0.2s linear;
+  transition: right 0.3s ease, transform 0.2s ease 0.1s, box-shadow 0.2s linear;
+}
+
+.ios-checkbox-item:after,
+.ios-checkbox:disabled:checked + label:active .ios-checkbox-item:after {
+  content: '';
+  position: absolute;
+  left: 10%;
+  top: 0;
+  z-index: 0;
+  width: 90%;
+  height: 100%;
+  border-radius: 16px;
+  background: #fff;
+
+  -webkit-transition: all 0.2s linear;
+  -moz-transition: all 0.2s linear;
+  transition: all 0.2s linear;
+}
+
+/* CONTRAST */
+
+.ios-checkbox-item.ios-contrast {
+  border: 1px solid #d81316;
+  background: #d81316;
+}
+
+.ios-checkbox-item.ios-contrast:after {
+  display: none;
+}
+
+/* ACTIVE */
+
+.ios-checkbox:checked + label .ios-checkbox-item {
+  border-color: #0ea518;
+  background: #0ea518;
+
+  -webkit-transition: all 0.2s linear 0.1s;
+  -moz-transition: all 0.2s linear 0.1s;
+  -o-transition: all 0.2s linear 0.1s;
+  transition: all 0.2s linear 0.1s;
+}
+
+.ios-checkbox:checked + label .ios-checkbox-item:before {
+  right: 0;
+  box-shadow: -1px 0 2px 1px rgba(0, 0, 0, 0.3);
+
+  -webkit-transform: translateX(0);
+  -moz-transform: translateX(0);
+  -ms-transform: translateX(0);
+  -o-transform: translateX(0);
+  transform: translateX(0);
+}
+
+.ios-checkbox + label:active .ios-checkbox-item:before {
+  width: 40px;
+
+  -webkit-transition: all 0.2s linear;
+  -moz-transition: all 0.2s linear;
+  -o-transition: all 0.2s linear;
+  transition: all 0.2s linear;
+}
+
+.ios-checkbox:checked + label .ios-checkbox-item:after,
+.ios-checkbox:checked + label:active .ios-checkbox-item:after,
+.ios-checkbox:disabled:checked + label:active .ios-checkbox-item:after {
+  left: 60%;
+  top: 50%;
+  width: 0;
+  height: 0;
+}
+
+/* DISABLED */
+
+.ios-checkbox:disabled + label {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.ios-checkbox:disabled + label .ios-checkbox-item {
+  cursor: default;
+}
+
+.ios-checkbox:disabled + label:active .ios-checkbox-item:before {
+  width: 30px;
+}

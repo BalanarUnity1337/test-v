@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import Router from 'vue-router';
 import NProgress from 'nprogress';
-import { ROUTES_NAMES } from '@/mixins/constants.js';
+import { ROUTES_NAMES } from '@/constants.js';
 
 Vue.use(Router);
 
@@ -28,6 +28,11 @@ const router = new Router({
       path: '/users/:id/edit',
       name: ROUTES_NAMES.editUser,
       component: () => import('@/views/EditUser.vue')
+    },
+    {
+      path: '/phonebook/page/:page',
+      name: ROUTES_NAMES.phoneBook,
+      component: () => import('@/views/PhoneBook.vue')
     }
   ]
 });
