@@ -285,8 +285,10 @@ export default {
       deep: true
     },
 
-    user: function(newVal) {
-      this.localUser = Object.assign({}, newVal);
+    user(newVal, oldVal) {
+      if (!this.isUsersEqual(newVal, oldVal)) {
+        this.localUser = Object.assign({}, this.user);
+      }
     }
   },
 
@@ -295,10 +297,8 @@ export default {
   },
 
   methods: {
-    updateUser(newVal, oldVal) {
-      if (!this.isUsersEqual(newVal, oldVal)) {
-        this.$emit('input', this.localUser);
-      }
+    updateUser() {
+      this.$emit('input', Object.assign({}, this.localUser));
     },
 
     sendForm() {
@@ -309,13 +309,18 @@ export default {
       }
     },
 
-    isUsersEqual: function(newUser, oldUser) {
+    isUsersEqual(newUser, oldUser) {
       return JSON.stringify(newUser) === JSON.stringify(oldUser);
     }
   },
 
   validations: {
     localUser: {
+      email: {
+        required,
+        email
+      },
+
       firstName: {
         required,
         minLength: minLength(3),
@@ -326,11 +331,6 @@ export default {
         required,
         minLength: minLength(3),
         startsWithUpperCase
-      },
-
-      email: {
-        required,
-        email
       }
     }
   }

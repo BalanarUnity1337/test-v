@@ -10,33 +10,7 @@
       <smart-table
         v-bind:users="users"
         v-on:update-table="getUsers"
-        v-on:remove-user="removeUser" >
-        <template
-          slot="table-row"
-          slot-scope="{ user, removeUser }">
-          <td>
-            <router-link
-              v-tooltip="'Редактировать'"
-              v-bind:to="`/users/${user.id}/edit`"
-              class="text-white" >#{{ user.id }} ✎</router-link>
-          </td>
-
-          <td>{{ user.firstName }}</td>
-          <td>{{ user.lastName }}</td>
-          <td>{{ user.isActive }}</td>
-          <td>{{ user.balance }}</td>
-          <td>{{ user.phone }}</td>
-          <td>{{ user.registered }}</td>
-
-          <td>
-            <button
-              v-tooltip="'Удалить'"
-              type="button"
-              class="btn btn-light"
-              v-on:click="removeUser(user.id)">&times;</button>
-          </td>
-        </template>
-      </smart-table>
+        v-on:remove-user="removeUser" />
     </div>
   </div>
 </template>
@@ -51,14 +25,12 @@ export default {
     'smart-table': () => import('@/components/SmartTable.vue')
   },
 
-  data() {
-    return {
-      users: []
-    };
-  },
-
   computed: {
-    isUsersExists: function() {
+    users() {
+      return this.$store.state.users;
+    },
+
+    isUsersExists() {
       return this.users.length > 0;
     }
   },
@@ -69,13 +41,18 @@ export default {
 
   methods: {
     getUsers() {
-      axios.get('/users').then(response => (this.users = response.data));
+      this.$store.dispatch('getUsers');
     },
 
     removeUser(id) {
       axios
         .delete(`/users/${id}`)
-        .then((this.users = this.users.filter(user => user.id !== id)));
+        .then(() =>
+          this.$store.commit(
+            'setUsers',
+            this.users.filter(user => user.id !== id)
+          )
+        );
     }
   }
 };

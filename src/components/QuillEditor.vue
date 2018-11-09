@@ -1,7 +1,7 @@
 <template>
   <vue-editor
     v-bind:value="text"
-    v-on:input="updateText($event)" />
+    v-on:input="updateText" />
 </template>
 
 <script>

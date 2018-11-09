@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import App from '@/App.vue';
 import router from '@/router.js';
+import store from '@/store.js';
 import VTooltip from 'v-tooltip';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'nprogress/nprogress.css';
@@ -13,5 +14,6 @@ Vue.config.productionTip = false;
 
 new Vue({
   router,
+  store,
   render: h => h(App)
 }).$mount('#app');

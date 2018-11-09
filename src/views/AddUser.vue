@@ -1,6 +1,6 @@
 <template>
   <div class="container mb-3">
-    <h3 class="text-white text-center mb-3">Добавление пользователя</h3>
+    <h3 class="text-white text-center mb-3">Добавление пользователя {{ $store.state.user.firstName }} {{ $store.state.user.lastName }}</h3>
 
     <user-form
       v-model="user"
@@ -58,6 +58,7 @@ export default {
 
       axios
         .post('/users', this.user)
+        .then(() => this.$store.commit('addUser', this.user))
         .then(() => this.backToUsers())
         .catch(error => console.error(error));
     },

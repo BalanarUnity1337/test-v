@@ -5,7 +5,7 @@
       class="display-4 text-white text-center">Такого пользователя нет</div>
 
     <div v-else>
-      <h3 class="text-white text-center mb-3">Редактирование пользователя</h3>
+      <h3 class="text-white text-center mb-3">Редактирование пользователя {{ user.firstName }} {{ user.lastName }}</h3>
 
       <user-form
         v-model="user"
@@ -53,8 +53,7 @@ export default {
 
   data() {
     return {
-      user: null,
-      usersURI: 'http://localhost:3004/users'
+      user: null
     };
   },
 
@@ -65,6 +64,14 @@ export default {
 
     isPrevBtnDisabled() {
       return this.id < 1;
+    },
+
+    userIdURI() {
+      return `/users/${this.id}`;
+    },
+
+    usersLoaded() {
+      return this.$store.state.users.length > 0;
     }
   },
 
@@ -78,18 +85,24 @@ export default {
 
   methods: {
     loadUser() {
-      axios
-        .get(`/users/${this.id}`)
-        .then(response => (this.user = response.data))
-        .catch(error => {
-          this.user = null;
-          console.error(error);
-        });
+      if (this.usersLoaded) {
+        this.user = this.$store.state.users.filter(
+          user => user.id === this.id
+        )[0];
+      } else {
+        axios
+          .get(this.userIdURI)
+          .then(response => (this.user = response.data))
+          .catch(error => {
+            this.user = null;
+            console.error(error);
+          });
+      }
     },
 
     editUser() {
       axios
-        .patch(`/users/${this.id}`, this.user)
+        .patch(this.userIdURI, this.user)
         .then(() => this.backToUsers())
         .catch(error => console.error(error));
     },

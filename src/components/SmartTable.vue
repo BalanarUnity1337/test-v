@@ -16,26 +16,59 @@
         <table-search v-model.trim="filterValue"/>
       </div>
 
-      <user-list
-        v-bind:users="usersToShow"
-        v-on:remove-user="removeUser">
+      <table class="table table-striped table-dark mt-2">
+        <thead>
+          <tr>
+            <slot name="table-header">
+              <th scope="col">#</th>
+              <th scope="col">Имя</th>
+              <th scope="col">Фамилия</th>
+              <th scope="col">Активен</th>
+              <th scope="col">Баланс</th>
+              <th scope="col">Телефон</th>
+              <th scope="col">Дата регистрации</th>
+              <th></th>
+            </slot>
+          </tr>
+        </thead>
 
-        <template slot="table-header">
-          <slot name="table-header"></slot>
-        </template>
+        <tbody>
+          <tr
+            v-for="user in usersToShow"
+            v-bind:key="user.id">
 
-        <template
-          slot="table-row"
-          slot-scope="{ user, removeUser }">
-          <slot
-            v-bind:user="user"
-            v-bind:remove-user="removeUser"
-            name="table-row"></slot>
-        </template>
-      </user-list>
+            <slot
+              v-bind:user="user"
+              v-bind:remove-user="removeUser"
+              name="table-row">
+              <td>
+                <router-link
+                  v-tooltip="'Редактировать'"
+                  v-bind:to="`/users/${user.id}/edit`"
+                  class="text-white" >#{{ user.id }} ✎</router-link>
+              </td>
+
+              <td>{{ user.firstName }}</td>
+              <td>{{ user.lastName }}</td>
+              <td>{{ user.isActive }}</td>
+              <td>{{ user.balance }}</td>
+              <td>{{ user.phone }}</td>
+              <td>{{ user.registered }}</td>
+
+              <td>
+                <button
+                  v-tooltip="'Удалить'"
+                  type="button"
+                  class="btn btn-light"
+                  v-on:click="removeUser(user.id)">&times;</button>
+              </td>
+            </slot>
+          </tr>
+        </tbody>
+      </table>
 
       <content-pagination
-        v-model="currentPage"
+        v-model="page"
         v-bind:total="usersTotalInView"
         v-bind:limit="rowsPerPage"
         v-on:pagination-click="switchPage" />
@@ -67,8 +100,8 @@ export default {
 
   data() {
     return {
+      page: 1,
       rowsPerPage: 5,
-      currentPage: 1,
       filterValue: ''
     };
   },
@@ -93,12 +126,18 @@ export default {
       const sliceEndPoint = this.currentPage * this.rowsPerPage;
 
       return this.filteredUsers.slice(sliceStartPoint, sliceEndPoint);
+    },
+
+    currentPage() {
+      return typeof this.$route.params.page === 'undefined'
+        ? 1
+        : Number(this.$route.params.page);
     }
   },
 
   watch: {
     $route() {
-      this.currentPage = this.getCurrentPage();
+      this.page = this.currentPage;
     },
 
     rowsPerPage() {
@@ -109,7 +148,7 @@ export default {
   },
 
   mounted() {
-    this.currentPage = this.getCurrentPage();
+    this.page = this.currentPage;
   },
 
   methods: {
@@ -123,12 +162,6 @@ export default {
 
     switchPage(page) {
       this.$router.push({ name: page.name, params: { page: page.toPage } });
-    },
-
-    getCurrentPage() {
-      return typeof this.$route.params.page === 'undefined'
-        ? 1
-        : Number(this.$route.params.page);
     }
   }
 };

@@ -35,8 +35,6 @@
 </template>
 
 <script>
-import axios from '@/axios.js';
-
 export default {
   name: 'PhoneBook',
 
@@ -44,13 +42,11 @@ export default {
     'smart-table': () => import('@/components/SmartTable.vue')
   },
 
-  data() {
-    return {
-      users: []
-    };
-  },
-
   computed: {
+    users() {
+      return this.$store.state.users;
+    },
+
     isUsersExists() {
       return this.users.length > 0;
     }
@@ -62,7 +58,7 @@ export default {
 
   methods: {
     getUsers() {
-      axios.get('/users').then(response => (this.users = response.data));
+      this.$store.dispatch('getUsers');
     }
   }
 };

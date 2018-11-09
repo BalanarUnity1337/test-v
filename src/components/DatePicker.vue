@@ -4,7 +4,7 @@
     v-bind:value="date"
     class="form-control"
     type="text"
-    placeholder="День рождения">
+    placeholder="Укажите дату">
 </template>
 
 <script>
