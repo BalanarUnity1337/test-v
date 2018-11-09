@@ -15,7 +15,7 @@ const router = new Router({
       component: () => import('@/views/Home.vue')
     },
     {
-      path: '/users/page/:page',
+      path: '/users/page/:page?',
       name: ROUTES_NAMES.users,
       component: () => import('@/views/Users.vue')
     },
@@ -30,7 +30,7 @@ const router = new Router({
       component: () => import('@/views/EditUser.vue')
     },
     {
-      path: '/phonebook/page/:page',
+      path: '/phonebook/page/:page?',
       name: ROUTES_NAMES.phoneBook,
       component: () => import('@/views/PhoneBook.vue')
     }

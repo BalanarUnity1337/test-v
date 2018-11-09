@@ -3,27 +3,27 @@
     <h3 class="text-white text-center mb-3">Добавление пользователя</h3>
 
     <user-form
-      v-model="user">
+      v-model="user"
+      v-on:send-form="addUser">
       <template
         slot="footer-buttons"
-        slot-scope="{ hasError }">
+        slot-scope="{ sendForm }">
         <button
           type="button"
           class="btn btn-light mr-4"
           v-on:click="backToUsers">Назад</button>
 
         <button
-          v-bind:disabled="hasError"
           type="button"
           class="btn btn-light"
-          v-on:click="addUser">Добавить пользователя</button>
+          v-on:click="sendForm">Добавить пользователя</button>
       </template>
     </user-form>
   </div>
 </template>
 
 <script>
-import axios from 'axios';
+import axios from '@/axios.js';
 import { format } from 'date-fns';
 
 export default {
@@ -48,9 +48,7 @@ export default {
         phone: '',
         address: '',
         about: ''
-      },
-
-      usersURI: 'http://localhost:3004/users/'
+      }
     };
   },
 
@@ -59,13 +57,13 @@ export default {
       this.user.registered = format(new Date(), 'DD.MM.YYYY');
 
       axios
-        .post(this.usersURI, this.user)
+        .post('/users', this.user)
         .then(() => this.backToUsers())
         .catch(error => console.error(error));
     },
 
     backToUsers() {
-      this.$router.push({ path: '/users/page/1' });
+      this.$router.push({ name: 'users' });
     }
   }
 };

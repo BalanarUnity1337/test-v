@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <div
-      v-if="!usersExist"
+      v-if="!isUsersExists"
       class="display-4 text-white text-center">Список пользователей пока пуст</div>
 
     <div v-else>
@@ -9,27 +9,8 @@
 
       <smart-table
         v-bind:users="users"
-        v-model.number="limit"
-        v-bind:filter-value="filterValue"
-        v-bind:total="totalInCollection"
-        v-bind:page="currentPage"
-        v-bind:users-total="usersTotal"
         v-on:update-table="getUsers"
-        v-on:remove-user="removeUser"
-        v-on:update-filter="updateFilter" >
-        <template slot="table-header">
-          <slot name="table-header">
-            <th scope="col">#</th>
-            <th scope="col">Имя</th>
-            <th scope="col">Фамилия</th>
-            <th scope="col">Активен</th>
-            <th scope="col">Баланс</th>
-            <th scope="col">Телефон</th>
-            <th scope="col">Дата регистрации</th>
-            <th></th>
-          </slot>
-        </template>
-
+        v-on:remove-user="removeUser" >
         <template
           slot="table-row"
           slot-scope="{ user, removeUser }">
@@ -61,7 +42,7 @@
 </template>
 
 <script>
-import axios from 'axios';
+import axios from '@/axios.js';
 
 export default {
   name: 'UsersPage',
@@ -72,46 +53,13 @@ export default {
 
   data() {
     return {
-      users: [],
-      usersURI: 'http://localhost:3004/users',
-      filterValue: '',
-      usersTotal: 0,
-      currentPage: 1,
-      limit: 5,
-      totalInCollection: 0
+      users: []
     };
   },
 
   computed: {
-    usersExist() {
-      return this.usersTotal > 0;
-    },
-
-    paramPage() {
-      return Number(this.$route.params.page);
-    },
-
-    url() {
-      return `${this.usersURI}?_page=${this.currentPage}&_limit=${this.limit}`;
-    },
-
-    urlWithFilter() {
-      return `${this.url}&q=${this.filterValue}`;
-    }
-  },
-
-  watch: {
-    $route() {
-      this.currentPage = this.paramPage;
-      this.getUsers();
-    },
-
-    limit() {
-      this.getUsers();
-    },
-
-    filterValue() {
-      this.getUsers();
+    isUsersExists: function() {
+      return this.users.length > 0;
     }
   },
 
@@ -121,40 +69,13 @@ export default {
 
   methods: {
     getUsers() {
-      if (this.filterValue) {
-        axios
-          .get(this.urlWithFilter)
-          .then(response => this.onLoadUsersFiltered(response))
-          .catch(error => console.error(error));
-      } else {
-        axios
-          .get(this.url)
-          .then(response => this.onLoadUsersDefault(response))
-          .catch(error => console.error(error));
-      }
-    },
-
-    onLoadUsersDefault(response) {
-      this.usersTotal = this.totalInCollection = Number(
-        response.headers['x-total-count']
-      );
-      this.users = response.data;
-    },
-
-    onLoadUsersFiltered(response) {
-      this.totalInCollection = Number(response.headers['x-total-count']);
-      this.users = response.data;
+      axios.get('/users').then(response => (this.users = response.data));
     },
 
     removeUser(id) {
       axios
-        .delete(`${this.usersURI}/${id}`)
-        .then(() => this.getUsers())
-        .catch(error => console.error(error));
-    },
-
-    updateFilter(value) {
-      this.filterValue = value;
+        .delete(`/users/${id}`)
+        .then((this.users = this.users.filter(user => user.id !== id)));
     }
   }
 };

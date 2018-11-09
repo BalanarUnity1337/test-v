@@ -5,12 +5,12 @@
       class="form-control mb-2"
       v-on:change="updateCount($event.target.value)">
       <option
-        v-for="(rowsCount, index) in rowsCountList"
-        v-bind:key="index"
-        v-bind:value="rowsCount.value" >{{ rowsCount.text }}</option>
+        v-for="rowsCount in rowsCountList"
+        v-bind:key="rowsCount"
+        v-bind:value="rowsCount" >{{ rowsCount }}</option>
     </select>
 
-    <span>Выбрано элементов на страницу: {{ count }}</span>
+    <span>Показывать элементов на странице: {{ count }}</span>
   </div>
 </template>
 
@@ -31,12 +31,7 @@ export default {
 
   data() {
     return {
-      rowsCountList: [
-        { text: 2, value: 2 },
-        { text: 5, value: 5 },
-        { text: 10, value: 10 },
-        { text: 20, value: 20 }
-      ]
+      rowsCountList: [2, 5, 10, 20]
     };
   },
 

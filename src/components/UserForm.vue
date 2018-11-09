@@ -64,9 +64,9 @@
               name="accessLevel">
 
               <option
-                v-for="(accessLevel, index) in accessLevelList"
+                v-for="accessLevel in accessLevelList"
                 v-bind:value="accessLevel.value"
-                v-bind:key="index" >{{ accessLevel.text }}</option>
+                v-bind:key="accessLevel.value" >{{ accessLevel.text }}</option>
 
             </select>
           </td>
@@ -89,7 +89,7 @@
               placeholder="Имя">
 
             <div
-              v-if="!$v.localUser.firstName.required"
+              v-if="!$v.localUser.firstName.required && $v.localUser.firstName.$dirty"
               class="error">Пожалуйста, укажите имя</div>
 
             <div
@@ -119,7 +119,7 @@
               placeholder="Фамилия">
 
             <div
-              v-if="!$v.localUser.lastName.required"
+              v-if="!$v.localUser.lastName.required && $v.localUser.lastName.$dirty"
               class="error">Пожалуйста, укажите фамилию</div>
 
             <div
@@ -166,7 +166,7 @@
               placeholder="E-Mail">
 
             <div
-              v-if="!$v.localUser.email.required"
+              v-if="!$v.localUser.email.required && $v.localUser.email.$dirty"
               class="error">Пожалуйста, заполните поле</div>
 
             <div
@@ -224,11 +224,11 @@
     </table>
 
     <div
-      v-if="$v.$anyError"
+      v-if="hasError"
       class="error mb-3">Проверьте правильность заполения полей формы</div>
 
     <slot
-      v-bind:has-error="$v.$anyError"
+      v-bind:send-form="sendForm"
       name="footer-buttons"></slot>
   </div>
 </template>
@@ -273,10 +273,20 @@ export default {
     };
   },
 
+  computed: {
+    hasError() {
+      return this.$v.$anyError;
+    }
+  },
+
   watch: {
     localUser: {
       handler: 'updateUser',
       deep: true
+    },
+
+    user: function(newVal) {
+      this.localUser = Object.assign({}, newVal);
     }
   },
 
@@ -284,15 +294,23 @@ export default {
     this.localUser = Object.assign({}, this.user);
   },
 
-  mounted() {
-    this.$v.$touch();
-  },
-
   methods: {
     updateUser(newVal, oldVal) {
       if (!this.isUsersEqual(newVal, oldVal)) {
         this.$emit('input', this.localUser);
       }
+    },
+
+    sendForm() {
+      this.$v.$touch();
+
+      if (!this.hasError) {
+        this.$emit('send-form');
+      }
+    },
+
+    isUsersEqual: function(newUser, oldUser) {
+      return JSON.stringify(newUser) === JSON.stringify(oldUser);
     }
   },
 

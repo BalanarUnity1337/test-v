@@ -11,13 +11,13 @@
 
     <div class="card-body">
       <div class="row justify-content-between">
-        <table-rows-count v-model.number="localLimit"/>
+        <table-rows-count v-model.number="rowsPerPage"/>
 
-        <table-search v-model.trim="locaFilterValue"/>
+        <table-search v-model.trim="filterValue"/>
       </div>
 
       <user-list
-        v-bind:users="users"
+        v-bind:users="usersToShow"
         v-on:remove-user="removeUser">
 
         <template slot="table-header">
@@ -35,9 +35,9 @@
       </user-list>
 
       <content-pagination
-        v-bind:page="page"
-        v-bind:total="total"
-        v-bind:limit="limit"
+        v-model="currentPage"
+        v-bind:total="usersTotalInView"
+        v-bind:limit="rowsPerPage"
         v-on:pagination-click="switchPage" />
     </div>
   </div>
@@ -62,54 +62,54 @@ export default {
     users: {
       type: Array,
       required: true
-    },
-
-    usersTotal: {
-      type: Number,
-      required: true
-    },
-
-    total: {
-      type: Number,
-      required: true
-    },
-
-    page: {
-      type: Number,
-      required: true
-    },
-
-    limit: {
-      type: Number,
-      required: true
-    },
-
-    filterValue: {
-      type: String,
-      required: true
     }
   },
 
   data() {
     return {
-      localPagination: null,
-      localLimit: 0,
-      locaFilterValue: ''
+      rowsPerPage: 5,
+      currentPage: 1,
+      filterValue: ''
     };
   },
 
+  computed: {
+    usersTotal() {
+      return this.users.length;
+    },
+
+    usersTotalInView() {
+      return this.filteredUsers.length;
+    },
+
+    filteredUsers() {
+      const regex = new RegExp(this.filterValue, 'i');
+
+      return this.users.filter(user => regex.test(user.lastName));
+    },
+
+    usersToShow() {
+      const sliceStartPoint = (this.currentPage - 1) * this.rowsPerPage;
+      const sliceEndPoint = this.currentPage * this.rowsPerPage;
+
+      return this.filteredUsers.slice(sliceStartPoint, sliceEndPoint);
+    }
+  },
+
   watch: {
-    localLimit: 'updateLimit',
-    locaFilterValue: 'updateFilter'
+    $route() {
+      this.currentPage = this.getCurrentPage();
+    },
+
+    rowsPerPage() {
+      this.switchPage({
+        name: this.$route.name
+      });
+    }
   },
 
   mounted() {
-    this.currentPage = this.paramPage;
-  },
-
-  created() {
-    this.localPagination = Object.assign({}, this.pagination);
-    this.localLimit = this.limit;
+    this.currentPage = this.getCurrentPage();
   },
 
   methods: {
@@ -125,12 +125,10 @@ export default {
       this.$router.push({ name: page.name, params: { page: page.toPage } });
     },
 
-    updateFilter() {
-      this.$emit('update-filter', this.locaFilterValue);
-    },
-
-    updateLimit() {
-      this.$emit('input', this.localLimit);
+    getCurrentPage() {
+      return typeof this.$route.params.page === 'undefined'
+        ? 1
+        : Number(this.$route.params.page);
     }
   }
 };

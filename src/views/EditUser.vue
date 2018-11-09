@@ -8,26 +8,27 @@
       <h3 class="text-white text-center mb-3">Редактирование пользователя</h3>
 
       <user-form
-        v-model="user">
+        v-model="user"
+        v-on:send-form="editUser">
         <template
           slot="footer-buttons"
-          slot-scope="{ hasError }">
+          slot-scope="{ sendForm }">
           <button
             type="button"
             class="btn btn-light mr-4"
             v-on:click="backToUsers">Назад</button>
 
           <button
-            v-bind:disabled="hasError"
             type="button"
             class="btn btn-light"
-            v-on:click="editUser">Подтвердить</button>
+            v-on:click="sendForm">Подтвердить</button>
         </template>
       </user-form>
     </div>
 
     <div class="row justify-content-between mt-3">
       <button
+        v-bind:disabled="isPrevBtnDisabled"
         class="btn btn-light"
         type="button"
         v-on:click="prevUser">Предыдущий пользователь</button>
@@ -41,7 +42,7 @@
 </template>
 
 <script>
-import axios from 'axios';
+import axios from '@/axios.js';
 
 export default {
   name: 'EditUserPage',
@@ -62,8 +63,8 @@ export default {
       return Number(this.$route.params.id);
     },
 
-    userIdURI() {
-      return `${this.usersURI}/${this.id}`;
+    isPrevBtnDisabled() {
+      return this.id < 1;
     }
   },
 
@@ -78,7 +79,7 @@ export default {
   methods: {
     loadUser() {
       axios
-        .get(this.userIdURI)
+        .get(`/users/${this.id}`)
         .then(response => (this.user = response.data))
         .catch(error => {
           this.user = null;
@@ -88,7 +89,7 @@ export default {
 
     editUser() {
       axios
-        .patch(this.userIdURI, this.user)
+        .patch(`/users/${this.id}`, this.user)
         .then(() => this.backToUsers())
         .catch(error => console.error(error));
     },
@@ -106,7 +107,7 @@ export default {
     },
 
     backToUsers() {
-      this.$router.push({ path: '/users/page/1' });
+      this.$router.push({ name: 'users' });
     }
   }
 };

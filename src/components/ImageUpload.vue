@@ -1,11 +1,4 @@
 <template>
-  <!-- <div class="form-group">
-    <input type="file">
-
-    <button
-      class="btn btn-light"
-      type="button"></button>
-  </div> -->
   <div class="row ml-3 mr-3">
     <img
       v-bind:src="imageSrc"

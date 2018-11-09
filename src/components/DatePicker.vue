@@ -1,7 +1,7 @@
 <template>
   <input
     ref="datepicker"
-    v-bind:value="birthday"
+    v-bind:value="date"
     class="form-control"
     type="text"
     placeholder="День рождения">
@@ -17,11 +17,11 @@ export default {
   name: 'DatePicker',
 
   model: {
-    prop: 'birthday'
+    prop: 'date'
   },
 
   props: {
-    birthday: {
+    date: {
       type: String,
       required: true
     }

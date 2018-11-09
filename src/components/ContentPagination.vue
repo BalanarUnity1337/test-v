@@ -38,6 +38,10 @@
 export default {
   name: 'ContentPagination',
 
+  model: {
+    prop: 'page'
+  },
+
   props: {
     page: {
       type: Number,
@@ -62,7 +66,7 @@ export default {
   },
 
   computed: {
-    numberPageLinks() {
+    totalPageLinks() {
       return Math.ceil(this.total / this.limit);
     },
 
@@ -71,14 +75,14 @@ export default {
     },
 
     isNextBtnDisabled() {
-      return this.page >= this.numberPageLinks;
+      return this.page >= this.totalPageLinks;
     },
 
     pageLinks() {
       return this.calculationPositionOfPageLinks(
         this.page,
         this.pageRange,
-        this.numberPageLinks
+        this.totalPageLinks
       );
     }
   },

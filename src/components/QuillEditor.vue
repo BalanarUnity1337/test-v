@@ -1,5 +1,7 @@
 <template>
-  <vue-editor v-model="localText" />
+  <vue-editor
+    v-bind:value="text"
+    v-on:input="updateText($event)" />
 </template>
 
 <script>
@@ -24,23 +26,9 @@ export default {
     }
   },
 
-  data() {
-    return {
-      localText: ''
-    };
-  },
-
-  watch: {
-    localText: 'updateText'
-  },
-
-  created() {
-    this.localText = this.text;
-  },
-
   methods: {
-    updateText() {
-      this.$emit('input', this.localText);
+    updateText(text) {
+      this.$emit('input', text);
     }
   }
 };

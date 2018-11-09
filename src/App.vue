@@ -23,13 +23,13 @@
 
           <router-link
             tag="li"
-            to="/users/page/1">
+            to="/users/page">
             <a class="nav-link">Список пользователей</a>
           </router-link>
 
           <router-link
             tag="li"
-            to="/phonebook/page/1">
+            to="/phonebook/page">
             <a class="nav-link">Телефонная книга</a>
           </router-link>
 
